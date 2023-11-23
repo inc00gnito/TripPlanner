@@ -30,11 +30,30 @@ namespace api.Controllers
 
             var authResponse = new AuthResponse()
             {
-                Account = _mapper.Map<AccountDto>(account),
+                Username = _mapper.Map<AccountDto>(account).Username,
                 Token = token
             };
 
             return Ok(authResponse);
+        }
+        [HttpPost]
+        [Route("Login")]
+        public ActionResult<AuthResponse> Login([FromBody] LoginModel login)
+        {
+            var loggedToken = _authorization.Login(login);
+
+            AccountDto account = new AccountDto()
+            {
+                Username = login.Login
+            };
+
+            var authResponse = new AuthResponse()
+            {
+                Username = account.Username,
+                Token = loggedToken
+            };
+            return Ok(authResponse);
+
         }
     }
 }
