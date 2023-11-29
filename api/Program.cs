@@ -5,6 +5,8 @@ using api.Logic;
 using api.Models;
 var builder = WebApplication.CreateBuilder(args);
 
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
 // Add services to the container.
 builder.Services.AddHttpClient();
 builder.Services.AddControllers();
@@ -16,6 +18,18 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddDbContext<DataContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("TripPlanner")));
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://tripPlaner.somee.com",
+                                              "http://www.tripPlaner.somee.com")
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+                      });
+});
+
 builder.Services
     .AddScoped<IAuthorization, Authorization>()
     .AddScoped<IAccount, AccountData>()
@@ -24,11 +38,12 @@ builder.Services
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if( app.Environment.IsDevelopment() )
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseCors(MyAllowSpecificOrigins);
 
 app.UseHttpsRedirection();
 
