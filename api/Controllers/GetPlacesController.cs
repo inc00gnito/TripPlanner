@@ -9,15 +9,11 @@ namespace api.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class GetPlacesController : ControllerBase
-    {
-        private readonly HttpClient _httpClient;
-        private readonly IConfiguration _configuration;
+    {      
         private readonly IPlaces _places;
 
-        public GetPlacesController(IHttpClientFactory httpClientFactory, IConfiguration configuration, IPlaces places)
+        public GetPlacesController(IPlaces places)
         {
-            _httpClient = httpClientFactory.CreateClient();
-            _configuration = configuration;
             _places = places;
         }
 
@@ -40,6 +36,5 @@ namespace api.Controllers
                 return StatusCode(500, $"Internal Server Erorre: {ex.Message}");
             }
         }
-
     }
 }

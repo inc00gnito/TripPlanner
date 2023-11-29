@@ -18,7 +18,8 @@ builder.Services.AddDbContext<DataContext>(opt =>
 
 builder.Services
     .AddScoped<IAuthorization, Authorization>()
-    .AddScoped<IAccount, AccountData>();
+    .AddScoped<IAccount, AccountData>()
+    .AddScoped<IPlaces, Places>();
 
 var app = builder.Build();
 
