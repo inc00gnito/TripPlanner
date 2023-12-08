@@ -8,7 +8,7 @@ namespace api.Models
         public string? Place_id { get; set; } 
         public string? Name { get; set; }
         public string? Vicinity { get; set; } //adres
-                                             
+        
         public double? Rating { get; set; } // ocena
         public string? Formatted_phone_number { get; set; }
         public string? Website { get; set; } //

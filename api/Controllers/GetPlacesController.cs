@@ -9,7 +9,7 @@ namespace api.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class GetPlacesController : ControllerBase
-    {      
+    {
         private readonly IPlaces _places;
 
         public GetPlacesController(IPlaces places)
@@ -34,6 +34,23 @@ namespace api.Controllers
             catch( Exception ex )
             {
                 return StatusCode(500, $"Internal Server Erorre: {ex.Message}");
+            }
+        }
+        [HttpPost("route")]
+        public async Task<IActionResult> GetRoutePlaces([FromBody] List<PlaceModel> places)
+        {
+            try
+            {
+                var routeResponse = await _places.GetRoute( places );
+                if( routeResponse == null )
+                {
+                    return NotFound();
+                }
+                return Ok(routeResponse);
+            }
+            catch( Exception ex ) 
+            {
+                return StatusCode(500, $"Internal Server Error: {ex.Message}");
             }
         }
     }

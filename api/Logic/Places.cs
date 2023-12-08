@@ -1,6 +1,7 @@
 ﻿using api.Interfaces;
 using api.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Net.Http;
 
 namespace api.Logic
@@ -21,26 +22,26 @@ namespace api.Logic
             string apiKey = _configuration ["GooglePlacesApi:ApiKey"];
 
             string baseUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
-            
+
 
             string requestUrl = $"{baseUrl}?location={latitude},{longitude}&radius={radius}&type={category}&key={apiKey}";
 
 
-            using( HttpResponseMessage response = await _httpClient.GetAsync(requestUrl))
+            using( HttpResponseMessage response = await _httpClient.GetAsync(requestUrl) )
             {
                 if( response.IsSuccessStatusCode )
                 {
                     string content = await response.Content.ReadAsStringAsync();
 
-                    var placesResponse = JsonConvert.DeserializeObject<GooglePlacesResponse>(content);                 
+                    var placesResponse = JsonConvert.DeserializeObject<GooglePlacesResponse>(content);
 
                     return placesResponse;
                 }
-                else 
+                else
                 {
                     return null;
                 }
-            }              
+            }
         }
         public async Task<List<PlaceModel>> GetPlaceWithDetails(GooglePlacesResponse placesResponse)
         {
@@ -73,7 +74,55 @@ namespace api.Logic
             }
             return places;
         }
+        public async Task<string []> GetRoute(List<PlaceModel> places)
+        {
+            var instructionsList = new List<string>();
 
-        
+            string apiKey = _configuration ["GooglePlacesApi:ApiKey"];
+
+            string waypointsString = string.Join("|", places.Skip(1).Take(places.Count - 2).Select(p => p.Place_id));
+
+            //string apiUrl = $"https://maps.googleapis.com/maps/api/directions/json" +
+            //                $"?origin=place_id:{Uri.EscapeDataString(places [0].Place_id)}" +
+            //                $"&destination=place_id:{Uri.EscapeDataString(places [places.Count - 1].Place_id)}" +
+            //                $"&waypoints=place_id:{Uri.EscapeDataString(waypointsString)}" +
+            //                $"&key={apiKey}";
+
+            string apiUrl = $"https://maps.googleapis.com/maps/api/directions/json" +
+                        $"?origin=place_id:{Uri.EscapeDataString(places [0].Place_id)}" +
+                        $"&destination=place_id:{Uri.EscapeDataString(places [places.Count - 1].Place_id)}" +
+                        $"&waypoints=place_id:{Uri.EscapeDataString(waypointsString)}" +
+                        $"&key={apiKey}" +
+                        $"&mode=driving";
+            // w url dodac mode=driving i bedzie ze auto
+            HttpResponseMessage response = await _httpClient.GetAsync(apiUrl);
+
+            if( response.IsSuccessStatusCode )
+            {
+                string content = await response.Content.ReadAsStringAsync();
+                var route = ParseDirections(content);
+                return route;
+            }
+
+            return null;
+
+        }
+        static string [] ParseDirections(string json)
+        {
+            var routes = JToken.Parse(json)? ["routes"]?.SelectMany(route =>
+                    route? ["legs"]?.SelectMany(leg =>
+                        leg? ["steps"]?.Select(step =>
+                        {
+                            var htmlInstructions = (string)step ["html_instructions"];
+                            var travelMode = (string)step ["travel_mode"];
+                            var duration = (string)step ["duration"]? ["text"];
+                            var distance = (string)step ["distance"]? ["text"];
+
+                            return $"{htmlInstructions} ({travelMode}, {duration}, {distance})";
+                        })));
+            
+            return routes.ToArray();     
+        }
+
     }
 }
