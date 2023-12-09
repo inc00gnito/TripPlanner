@@ -11,19 +11,18 @@ namespace api.Controllers
     public class GetPlacesController : ControllerBase
     {
         private readonly IPlaces _places;
-
         public GetPlacesController(IPlaces places)
         {
             _places = places;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetPlaces(string category, int radius, double latitude, double longitude)
+        public async Task<IActionResult> GetPlacesByCategory(string category, int radius, double latitude, double longitude)
         {
             try
             {
                 var placesResponse = await _places.GetPlaces(category, radius, latitude, longitude);
-                //
+
                 if( placesResponse == null )
                 {
                     return NotFound();
@@ -37,7 +36,7 @@ namespace api.Controllers
             }
         }
         [HttpPost("route")]
-        public async Task<IActionResult> GetRoutePlaces([FromBody] List<PlaceModel> places)
+        public async Task<IActionResult> GetRouteOfPlaces([FromBody] List<PlaceModel> places)
         {
             try
             {
