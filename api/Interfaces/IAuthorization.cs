@@ -5,7 +5,7 @@ namespace api.Interfaces
 {
     public interface IAuthorization
     {
-        public RegisterModel Register([FromBody] RegisterModel model);
+        public Register Register([FromBody] Register model);
         public string Login([FromBody] LoginModel model);
         public string CreateToken(Account account);
     }

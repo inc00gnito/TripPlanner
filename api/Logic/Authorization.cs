@@ -58,7 +58,7 @@ namespace api.Logic
             return token;
         }
 
-        public RegisterModel Register([FromBody] RegisterModel model)
+        public Register Register([FromBody] Register model)
         {
             if (_db.Accounts.Any(e => e.Username == model.Username))
                 throw new ConflictException("Account name already exists");

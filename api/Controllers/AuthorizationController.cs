@@ -22,7 +22,7 @@ namespace api.Controllers
 
         [HttpPost]
         [Route("Register")]
-        public ActionResult<AuthResponse> Register([FromBody] RegisterModel model)
+        public ActionResult<AuthResponse> Register([FromBody] Register model)
         {
             var registered = _authorization.Register(model);
             var account = _account.CreateAccount(registered);

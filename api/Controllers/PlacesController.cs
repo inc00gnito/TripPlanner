@@ -8,10 +8,10 @@ namespace api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GetPlacesController : ControllerBase
+    public class PlacesController : ControllerBase
     {
         private readonly IPlaces _places;
-        public GetPlacesController(IPlaces places)
+        public PlacesController(IPlaces places)
         {
             _places = places;
         }
@@ -23,31 +23,32 @@ namespace api.Controllers
             {
                 var placesResponse = await _places.GetPlaces(category, radius, latitude, longitude);
 
-                if( placesResponse == null )
+                if (placesResponse == null)
                 {
                     return NotFound();
                 }
                 var placesWithDetailsResponse = await _places.GetPlaceWithDetails(placesResponse);
                 return Ok(placesWithDetailsResponse);
             }
-            catch( Exception ex )
+            catch (Exception ex)
             {
                 return StatusCode(500, $"Internal Server Erorre: {ex.Message}");
             }
         }
         [HttpPost("route")]
-        public async Task<IActionResult> GetRouteOfPlaces([FromBody] List<PlaceModel> places)
+        public async Task<IActionResult> GetRouteOfPlaces([FromBody] List<Place> places)
         {
             try
             {
-                var routeResponse = await _places.GetRoute( places );
-                if( routeResponse == null )
+                var routeResponse = await _places.GetRoute(places);
+                
+                if (routeResponse == null)
                 {
                     return NotFound();
                 }
                 return Ok(routeResponse);
             }
-            catch( Exception ex ) 
+            catch (Exception ex) 
             {
                 return StatusCode(500, $"Internal Server Error: {ex.Message}");
             }

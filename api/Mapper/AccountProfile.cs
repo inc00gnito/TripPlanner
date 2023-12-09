@@ -8,7 +8,7 @@ namespace api.Mapper
     {
         public AccountProfile()
         {
-            CreateMap<RegisterModel, Account>()
+            CreateMap<Register, Account>()
                 .ForMember(
                     dest => dest.Password,
                     opt => opt.MapFrom(src => src.Password));
