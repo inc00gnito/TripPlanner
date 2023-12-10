@@ -9,5 +9,7 @@ namespace api.Data
 
 
         public DbSet<Account> Accounts { get; set; }
+        public DbSet<TripPlan> TripPlan { get; set; }
+        public DbSet<TripPlace> TripPlaces { get; set; }
     }
 }
