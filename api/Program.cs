@@ -6,6 +6,8 @@ using api.Models;
 using api.Middleware;
 var builder = WebApplication.CreateBuilder(args);
 
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
 // Add services to the container.
 builder.Services.AddHttpClient();
 builder.Services.AddControllers();
@@ -17,6 +19,18 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddDbContext<DataContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("TripPlanner")));
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost:5173")                                            
+                          .AllowAnyMethod()
+                          .AllowAnyHeader()
+                          .AllowCredentials();
+                      });
+});
+
 builder.Services
     .AddScoped<IAuthorization, Authorization>()
     .AddScoped<IAccount, AccountData>()
@@ -26,6 +40,13 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
+
+if( app.Environment.IsDevelopment() )
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+app.UseCors(MyAllowSpecificOrigins);
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseMiddleware<ErrorHandlerMiddleware>();
