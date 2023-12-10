@@ -3,6 +3,7 @@ using api.Data;
 using api.Interfaces;
 using api.Logic;
 using api.Models;
+using api.Middleware;
 var builder = WebApplication.CreateBuilder(args);
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -38,12 +39,16 @@ builder.Services
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+
 if( app.Environment.IsDevelopment() )
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 app.UseCors(MyAllowSpecificOrigins);
+app.UseSwagger();
+app.UseSwaggerUI();
+app.UseMiddleware<ErrorHandlerMiddleware>();
 
 app.UseHttpsRedirection();
 
