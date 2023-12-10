@@ -7,7 +7,7 @@ namespace api.Interfaces
         IEnumerable<Account> GetAccounts();
         Account? GetAccount(int accountId);
         Account? GetAccountByName(string accountName);
-        Account CreateAccount(RegisterModel registerModel);
+        Account CreateAccount(Register registerModel);
         
     }
 }

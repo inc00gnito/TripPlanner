@@ -4,7 +4,7 @@
     {
         public string Status { get; set; }
         public List<string>? HtmlAttributions { get; set; }
-        public PlaceModel Result { get; set; }
+        public Place Result { get; set; }
 
     }
 }
