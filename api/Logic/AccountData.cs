@@ -32,7 +32,7 @@ namespace api.Logic
             return _db.Accounts.ToList();
         }
 
-        public Account CreateAccount(RegisterModel registerModel)
+        public Account CreateAccount(Register registerModel)
         {
             var account = _mapper.Map<Account>(registerModel);
             _db.Accounts.Add(account);

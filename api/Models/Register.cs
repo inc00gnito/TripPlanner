@@ -2,7 +2,7 @@
 
 namespace api.Models
 {
-    public class RegisterModel
+    public class Register
     {
         [Required(ErrorMessage = "Account name is required")]
         [StringLength(20, MinimumLength = 3, ErrorMessage = "Account name should be between 3 and 16 characters")]
@@ -19,7 +19,7 @@ namespace api.Models
                 "Password requires minimum eight characters, at least one letter, one number and one special character")]
         public string Password { get; set; }
 
-        public RegisterModel(string username, string email, string password)
+        public Register(string username, string email, string password)
         {
             Username = username;
             Email = email;
