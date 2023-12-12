@@ -2,6 +2,7 @@
 using api.Interfaces;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace api.Logic
 {
@@ -12,8 +13,9 @@ namespace api.Logic
         {
             _db = db;
         }
-        public TripPlan CreateTripPlan(int accountId)
+        public TripPlan CreateTripPlan(string token)
         {
+            var accountId = ReadAccountID(token);
             var tripPlan = new TripPlan
             {
                 AccountId = accountId,
@@ -31,8 +33,9 @@ namespace api.Logic
             var tripPlan = _db.TripPlans.Include(tp => tp.Places).FirstOrDefault(tp => tp.Id == tripPlanId);
             return tripPlan;
         }
-        public void AddPlaceToTripPlan(int tripPlanId, int accountId, Place place)
+        public void AddPlaceToTripPlan(int tripPlanId, string token, Place place)
         {
+            var accountId = ReadAccountID(token);
             var tripPlace = new TripPlace
             {
                 ApiPlaceId = place.PlaceId,
@@ -62,6 +65,13 @@ namespace api.Logic
                 _db.TripPlaces.Remove(tripPlace);
                 _db.SaveChanges();
             }
+        }
+
+        public int ReadAccountID(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler().ReadJwtToken(token);
+            var id = tokenHandler.Claims.First(c => c.Type == "id").Value;
+            return int.Parse(id);
         }
     }
 }

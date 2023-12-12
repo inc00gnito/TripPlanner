@@ -44,17 +44,13 @@ builder.Services.AddAuthorization(options =>
         .Build();
 });
 
-builder.Services.AddCors(options =>
+builder.Services.AddCors(p => p.AddPolicy("MyPolicy", build =>
 {
-    options.AddPolicy(name: MyAllowSpecificOrigins,
-                      policy =>
-                      {
-                          policy.WithOrigins("http://tripPlaner.somee.com",
-                                             "http://www.tripPlaner.somee.com")
-                          .AllowAnyMethod()
-                          .AllowAnyHeader();
-                      });
-});
+    build.WithOrigins("http://localhost:5173")
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials();
+}));
 
 builder.Services
     .AddScoped<IAuthorization, Authorization>()
