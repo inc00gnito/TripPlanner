@@ -4,10 +4,9 @@ namespace api.Interfaces
 {
     public interface ITrip
     {
-        int ReadAccountID(string token);
-        TripPlan CreateTripPlan(string token);
+        TripPlan CreateTripPlan(int accountId);
         TripPlan GetTripPlan(int tripPlanId);
-        void AddPlaceToTripPlan(int tripPlanId, string token, Place place);
+        void AddPlaceToTripPlan(int tripPlanId, int accountId, string placeId);
         void DeleteTripPlan(int tripPlanId);
         void RemovePlaceFromTripPlan(string tripPlaceId, int tripPlanId);
     }

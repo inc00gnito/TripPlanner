@@ -11,7 +11,6 @@ namespace api.Models
         [ForeignKey("TripPlan")]
         public int TripPlanId { get; set; }
         [ForeignKey("Account")]
-        public int AccountId { get; set; }
         public TripPlan TripPlan;
     }
 }

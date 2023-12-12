@@ -10,21 +10,22 @@ namespace api.Controllers
     public class TripController : Controller
     {
         private readonly ITrip _trip;
-
+       
         public TripController(ITrip trip)
         {
             _trip = trip;
         }
 
         [HttpPost("create")]
-        public IActionResult CreateTripPlanByUser(string token)
+        public IActionResult CreateTripPlan()
         {
-            var tripPlan = _trip.CreateTripPlan(token);
+            var accountId = Convert.ToInt32(User.Claims.First(x => x.Type == "id").Value);
+            var tripPlan = _trip.CreateTripPlan(accountId);
             return Ok(tripPlan);
         }
 
-        [HttpDelete("delete/{tripPlanId}")]
-        public IActionResult DeleteTripPlanByUser(int tripPlanId)
+        [HttpDelete("{tripPlanId}")]
+        public IActionResult DeleteTripPlan(int tripPlanId)
         {
             var tripPlan = _trip.GetTripPlan(tripPlanId);
             if(tripPlan != null)
@@ -34,20 +35,21 @@ namespace api.Controllers
             }
             return BadRequest();
         }
-        [HttpGet("get/{tripPlanId}")]
-        public IActionResult GetTripPlanByUser(int tripPlanId)
+        [HttpGet("{tripPlanId}")]
+        public IActionResult GetTripPlan(int tripPlanId)
         {
             var tripPlan = _trip.GetTripPlan(tripPlanId);
             return tripPlan != null ? Ok(tripPlan) : NotFound();
         }
         [HttpPost("addPlace")]
-        public IActionResult AddPlaceToTripPlanByUser(int tripPlanId, string token, Place place)
+        public IActionResult AddPlaceToTripPlan(int tripPlanId, string placeId)
         {
-            _trip.AddPlaceToTripPlan(tripPlanId, token, place);
+            var accountId = Convert.ToInt32(User.Claims.First(x => x.Type == "id").Value);
+            _trip.AddPlaceToTripPlan(tripPlanId, accountId, placeId);
             return Ok();
         }
-        [HttpDelete("deletePlace/place/{tripPlaceId}/plan/{tripPlanId}")]
-        public IActionResult RemovePlaceFromTripPlanByUser(string tripPlaceId, int tripPlanId) 
+        [HttpDelete("place/{tripPlaceId}/plan/{tripPlanId}")]
+        public IActionResult RemovePlaceFromTripPlan(string tripPlaceId, int tripPlanId) 
         {
             var tripPlan = _trip.GetTripPlan(tripPlanId);
             if(tripPlan != null) 
