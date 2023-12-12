@@ -10,6 +10,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 
+var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddHttpClient();
 builder.Services.AddControllers();
@@ -43,11 +44,10 @@ builder.Services
     .AddScoped<IPlaces, Places>()
     .AddScoped<ITrip, Trip>();
 
-
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseRouting();

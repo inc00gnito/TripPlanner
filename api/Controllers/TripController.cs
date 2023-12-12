@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace api.Controllers
 {
     [Route("api/[controller]")]
-    //[Authorize]
+    [Authorize]
     public class TripController : Controller
     {
         private readonly ITrip _trip;
@@ -17,9 +17,9 @@ namespace api.Controllers
         }
 
         [HttpPost("create")]
-        public IActionResult CreateTripPlanByUser(int accountId)
+        public IActionResult CreateTripPlanByUser(string token)
         {
-            var tripPlan = _trip.CreateTripPlan(accountId);
+            var tripPlan = _trip.CreateTripPlan(token);
             return Ok(tripPlan);
         }
 
@@ -41,9 +41,9 @@ namespace api.Controllers
             return tripPlan != null ? Ok(tripPlan) : NotFound();
         }
         [HttpPost("addPlace")]
-        public IActionResult AddPlaceToTripPlanByUser(int tripPlanId, int accountId, Place place)
+        public IActionResult AddPlaceToTripPlanByUser(int tripPlanId, string token, Place place)
         {
-            _trip.AddPlaceToTripPlan(tripPlanId, accountId, place);
+            _trip.AddPlaceToTripPlan(tripPlanId, token, place);
             return Ok();
         }
         [HttpDelete("deletePlace/place/{tripPlaceId}/plan/{tripPlanId}")]
