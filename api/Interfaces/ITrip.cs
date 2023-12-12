@@ -1,0 +1,13 @@
+﻿using api.Models;
+
+namespace api.Interfaces
+{
+    public interface ITrip
+    {
+        TripPlan CreateTripPlan(string accountId);
+        TripPlan GetTripPlan(int tripPlanId);
+        void AddPlaceToTripPlan(int tripPlanId, int accountId, Place place);
+        void DeleteTripPlan(int tripPlanId);
+        void RemovePlaceFromTripPlan(int tripPlaceId);
+    }
+}
