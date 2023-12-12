@@ -50,7 +50,7 @@ builder.Services.AddCors(options =>
                       policy =>
                       {
                           policy.WithOrigins("http://tripPlaner.somee.com",
-                                              "http://www.tripPlaner.somee.com")
+                                             "http://www.tripPlaner.somee.com")
                           .AllowAnyMethod()
                           .AllowAnyHeader();
                       });
@@ -59,19 +59,17 @@ builder.Services.AddCors(options =>
 builder.Services
     .AddScoped<IAuthorization, Authorization>()
     .AddScoped<IAccount, AccountData>()
-    .AddScoped<IPlaces, Places>();
+    .AddScoped<IPlaces, Places>()
+    .AddScoped<ITrip, Trip>();
+
 
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
-
-if( app.Environment.IsDevelopment() )
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 app.UseCors(MyAllowSpecificOrigins);
 app.UseSwagger();
 app.UseSwaggerUI();
