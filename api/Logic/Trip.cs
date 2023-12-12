@@ -27,6 +27,11 @@ namespace api.Logic
 
             return tripPlan;
         }
+        public List<TripPlan> GetTripPlans(int accountId) 
+        {
+            var tripPlans = _db.TripPlans.Where(t=>t.AccountId==accountId).Include(t=>t.Places).ToList();
+            return tripPlans;
+        }
         public TripPlan GetTripPlan(int tripPlanId)
         {
             var tripPlan = _db.TripPlans.Include(tp => tp.Places).FirstOrDefault(tp => tp.Id == tripPlanId);

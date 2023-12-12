@@ -15,7 +15,14 @@ namespace api.Controllers
         {
             _trip = trip;
         }
-
+        [HttpGet("all")]
+        public IActionResult GetAllUserPlans()
+        {
+            var accountId = Convert.ToInt32(User.Claims.First(x => x.Type == "id").Value);
+            var tripPlans = _trip.GetUserTripPlans(accountId);
+            return tripPlans == null ? Ok(tripPlans) : NotFound(tripPlans);
+           
+        }
         [HttpPost("create")]
         public IActionResult CreateTripPlan()
         {
@@ -31,22 +38,22 @@ namespace api.Controllers
             if(tripPlan != null)
             {
                 _trip.DeleteTripPlan(tripPlanId);
-                return Ok();
+                return Ok(tripPlan);
             }
-            return BadRequest();
+            return BadRequest("Trip plan not found");
         }
         [HttpGet("{tripPlanId}")]
         public IActionResult GetTripPlan(int tripPlanId)
         {
             var tripPlan = _trip.GetTripPlan(tripPlanId);
-            return tripPlan != null ? Ok(tripPlan) : NotFound();
+            return tripPlan != null ? Ok(tripPlan) : NotFound(tripPlan);
         }
         [HttpPost("addPlace")]
         public IActionResult AddPlaceToTripPlan(int tripPlanId, string placeId)
         {
             var accountId = Convert.ToInt32(User.Claims.First(x => x.Type == "id").Value);
             _trip.AddPlaceToTripPlan(tripPlanId, accountId, placeId);
-            return Ok();
+            return Ok("A new place has been successfully added");
         }
         [HttpDelete("place/{tripPlaceId}/plan/{tripPlanId}")]
         public IActionResult RemovePlaceFromTripPlan(string tripPlaceId, int tripPlanId) 
@@ -55,9 +62,9 @@ namespace api.Controllers
             if(tripPlan != null) 
             {
                 _trip.RemovePlaceFromTripPlan(tripPlaceId, tripPlanId);
-                return Ok();
+                return Ok("Removed place from plan");
             }
-            return NotFound();         
+            return NotFound("Place not found");         
         }
     }
 }
