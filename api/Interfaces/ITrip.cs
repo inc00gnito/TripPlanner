@@ -8,6 +8,6 @@ namespace api.Interfaces
         TripPlan GetTripPlan(int tripPlanId);
         void AddPlaceToTripPlan(int tripPlanId, int accountId, Place place);
         void DeleteTripPlan(int tripPlanId);
-        void RemovePlaceFromTripPlan(int tripPlaceId);
+        void RemovePlaceFromTripPlan(string tripPlaceId, int tripPlanId);
     }
 }
