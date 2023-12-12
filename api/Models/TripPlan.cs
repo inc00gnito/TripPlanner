@@ -6,7 +6,7 @@ namespace api.Models
     {
         [Key]
         public int Id { get; set; }
-        public string AccountId { get; set; }
+        public int AccountId { get; set; }
         public bool IsPublic { get; set; }
         public List<TripPlace> Places { get; set; }
     }
