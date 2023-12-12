@@ -12,7 +12,7 @@ namespace api.Logic
         {
             _db = db;
         }
-        public TripPlan CreateTripPlan(string accountId)
+        public TripPlan CreateTripPlan(int accountId)
         {
             var tripPlan = new TripPlan
             {
@@ -20,7 +20,7 @@ namespace api.Logic
                 IsPublic = false,
                 Places = new List<TripPlace>()
             };
-
+            Console.WriteLine("dasdas");
             _db.TripPlans.Add(tripPlan);
             _db.SaveChanges();
 

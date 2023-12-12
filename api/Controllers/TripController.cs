@@ -6,13 +6,18 @@ using Microsoft.AspNetCore.Mvc;
 namespace api.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize]
+    //[Authorize]
     public class TripController : Controller
     {
         private readonly ITrip _trip;
 
+        public TripController(ITrip trip)
+        {
+            _trip = trip;
+        }
+
         [HttpPost("create")]
-        public IActionResult CreateTripPlanByUser(string accountId)
+        public IActionResult CreateTripPlanByUser(int accountId)
         {
             var tripPlan = _trip.CreateTripPlan(accountId);
             return Ok(tripPlan);
@@ -22,7 +27,12 @@ namespace api.Controllers
         public IActionResult DeleteTripPlanByUser(int tripPlanId)
         {
             var tripPlan = _trip.GetTripPlan(tripPlanId);
-            return tripPlan != null ? Ok(tripPlan) : NotFound();
+            if(tripPlan != null)
+            {
+                _trip.DeleteTripPlan(tripPlanId);
+                return Ok();
+            }
+            return BadRequest();
         }
         [HttpGet("get/{tripPlanId}")]
         public IActionResult GetTripPlanByUser(int tripPlanId)
