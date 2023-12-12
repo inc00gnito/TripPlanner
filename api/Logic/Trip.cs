@@ -53,9 +53,9 @@ namespace api.Logic
                 _db.SaveChanges();
             }           
         }
-        public void RemovePlaceFromTripPlan(int tripPlaceId)
+        public void RemovePlaceFromTripPlan(string tripPlaceId, int tripPlanId)
         {
-            var tripPlace = _db.TripPlaces.Find(tripPlaceId);
+            var tripPlace = _db.TripPlaces.FirstOrDefault(tp => tp.ApiPlaceId == tripPlaceId && tp.TripPlanId == tripPlanId);
 
             if( tripPlace != null )
             {
