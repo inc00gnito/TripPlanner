@@ -40,7 +40,7 @@ namespace api.Controllers
                 _trip.DeleteTripPlan(tripPlanId);
                 return Ok(tripPlan);
             }
-            return BadRequest("Trip plan not found");
+            return NotFound("Trip plan not found");
         }
         [HttpGet("{tripPlanId}")]
         public IActionResult GetTripPlan(int tripPlanId)

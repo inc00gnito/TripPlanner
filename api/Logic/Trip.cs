@@ -27,7 +27,7 @@ namespace api.Logic
 
             return tripPlan;
         }
-        public List<TripPlan> GetTripPlans(int accountId) 
+        public List<TripPlan> GetUserTripPlans(int accountId) 
         {
             var tripPlans = _db.TripPlans.Where(t=>t.AccountId==accountId).Include(t=>t.Places).ToList();
             return tripPlans;
