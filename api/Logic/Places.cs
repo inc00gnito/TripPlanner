@@ -1,7 +1,9 @@
-﻿using api.Exceptions;
+﻿using api.Data;
+using api.Exceptions;
 using api.Interfaces;
 using api.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net.Http;
@@ -12,7 +14,7 @@ namespace api.Logic
     {
         private readonly IConfiguration _configuration;
         private readonly HttpClient _httpClient;
-
+        private readonly DataContext _db;
         public Places(IConfiguration configuration, IHttpClientFactory httpClientFactory)
         {
             _configuration = configuration;
@@ -125,6 +127,5 @@ namespace api.Logic
             
             return routes.ToArray();     
         }
-
     }
 }
