@@ -68,5 +68,17 @@ namespace api.Logic
                 _db.SaveChanges();
             }
         }
+
+        public TripPlan SharePlan(int planId, int accountId)
+        {
+            TripPlan tripPlan = _db.TripPlans.Where(e => e.AccountId == accountId).FirstOrDefault(e => e.Id == planId);
+            if (tripPlan != null)
+            {
+                tripPlan.IsPublic = true;
+                _db.TripPlans.Update(tripPlan);
+                _db.SaveChanges();
+            }
+            return tripPlan;
+        }
     }
 }

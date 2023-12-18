@@ -10,5 +10,6 @@ namespace api.Interfaces
         void AddPlaceToTripPlan(int tripPlanId, int accountId, string placeId);
         void DeleteTripPlan(int tripPlanId);
         void RemovePlaceFromTripPlan(string tripPlaceId, int tripPlanId);
+        TripPlan SharePlan(int planId, int accountId);
     }
 }
