@@ -69,14 +69,14 @@ namespace api.Logic
             }
         }
 
-        public TripPlan SharePlan(int planId, int accountId)
+        public async Task<TripPlan> SharePlanAsync(int planId, int accountId)
         {
-            TripPlan tripPlan = _db.TripPlans.Where(e => e.AccountId == accountId).FirstOrDefault(e => e.Id == planId);
+            TripPlan tripPlan =  await _db.TripPlans.Where(e => e.AccountId == accountId).FirstOrDefaultAsync(e => e.Id == planId);
             if (tripPlan != null)
             {
                 tripPlan.IsPublic = true;
                 _db.TripPlans.Update(tripPlan);
-                _db.SaveChanges();
+                _db.SaveChangesAsync();
             }
             return tripPlan;
         }

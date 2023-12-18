@@ -68,11 +68,11 @@ namespace api.Controllers
         }
 
         [HttpGet("share/{tripPlanId}")]
-        public IActionResult SharePlan(int tripPlanId)
+        public async Task<IActionResult> SharePlanAsync(int tripPlanId)
         {
             var accountId = Convert.ToInt32(User.Claims.First(x => x.Type == "id").Value);
 
-            TripPlan tripPlan = _trip.SharePlan(tripPlanId, accountId);
+            TripPlan tripPlan = await _trip.SharePlanAsync(tripPlanId, accountId);
             if (tripPlan == null)
             {
                 return NotFound("Not Found");
