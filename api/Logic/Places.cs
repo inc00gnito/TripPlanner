@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Net;
 using System.Net.Http;
 
 namespace api.Logic
@@ -126,6 +127,27 @@ namespace api.Logic
                         })));
             
             return routes.ToArray();     
+        }
+        public async Location GeocodeLocation(string placeName)
+        {
+            string apiKey = _configuration ["GooglePlacesApi:ApiKey"];
+            using( var httpClient = new HttpClient() )
+            {
+                var apiUrl = $"https://maps.googleapis.com/maps/api/geocode/json?address={placeName}&key={apiKey}";
+
+                var response = await httpClient.GetStringAsync(apiUrl);
+                var geocodingResponse = JsonConvert.DeserializeObject<Geometry>(response);
+
+                if( geocodingResponse.Location != null)
+                {
+                    var location = geocodingResponse.Location;
+                    return location;
+                }
+                else
+                {
+                    throw new BadRequestException("Cannot get place location");
+                }
+            }
         }
     }
 }
