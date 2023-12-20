@@ -32,9 +32,9 @@ namespace api.Logic
 
             string requestUrl = $"{baseUrl}?location={placeLocation.Result.Lat},{placeLocation.Result.Lng}&radius={radius}&type={category}&key={apiKey}";
 
-            using( HttpResponseMessage response = await _httpClient.GetAsync(requestUrl) )
+            using(HttpResponseMessage response = await _httpClient.GetAsync(requestUrl))
             {
-                if( response.IsSuccessStatusCode )
+                if(response.IsSuccessStatusCode)
                 {
                     string content = await response.Content.ReadAsStringAsync();
 
@@ -54,13 +54,13 @@ namespace api.Logic
             string detailsUrl = "https://maps.googleapis.com/maps/api/place/details/json";
             List<Place> places = new List<Place>();
 
-            foreach( var placeWithDetails in placesResponse.Results )
+            foreach(var placeWithDetails in placesResponse.Results)
             {
                 string requestDetailsUrl = $"{detailsUrl}?place_id={placeWithDetails.PlaceId}&key={apiKey}";
 
-                using( HttpResponseMessage detailsResponse = await _httpClient.GetAsync(requestDetailsUrl) )
+                using(HttpResponseMessage detailsResponse = await _httpClient.GetAsync(requestDetailsUrl))
                 {
-                    if( detailsResponse.IsSuccessStatusCode )
+                    if(detailsResponse.IsSuccessStatusCode)
                     {
                         string detailsContent = await detailsResponse.Content.ReadAsStringAsync();
 
@@ -103,7 +103,7 @@ namespace api.Logic
 
             HttpResponseMessage response = await _httpClient.GetAsync(apiUrl);
 
-            if( response.IsSuccessStatusCode )
+            if(response.IsSuccessStatusCode)
             {
                 string content = await response.Content.ReadAsStringAsync();
                 var route = ParseDirections(content);
@@ -135,16 +135,16 @@ namespace api.Logic
             string apiKey = _configuration ["GooglePlacesApi:ApiKey"];
 
             var apiUrl = $"https://maps.googleapis.com/maps/api/geocode/json?address={placeName}&key={apiKey}";
-            
+
             HttpResponseMessage response = await _httpClient.GetAsync(apiUrl);
 
             if(response.IsSuccessStatusCode)
             {
-                string content = await response.Content.ReadAsStringAsync();    
+                string content = await response.Content.ReadAsStringAsync();
                 var geocodingResponse = JsonConvert.DeserializeObject<GeocodingResponse>(content);
                 if(geocodingResponse.Result.Length > 0)
                 {
-                    var location = geocodingResponse.Result[0].Geometry.Location;
+                    var location = geocodingResponse.Result [0].Geometry.Location;
                     return location;
                 }
                 else
