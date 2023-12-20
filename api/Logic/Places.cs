@@ -30,7 +30,7 @@ namespace api.Logic
 
             var placeLocation = GeocodeLocation(placeName);
 
-            string requestUrl = $"{baseUrl}?location={placeLocation.Result.Location.Lat},{placeLocation.Result.Location.Lng}&radius={radius}&type={category}&key={apiKey}";
+            string requestUrl = $"{baseUrl}?location={placeLocation.Result.Lat},{placeLocation.Result.Lng}&radius={radius}&type={category}&key={apiKey}";
 
             using( HttpResponseMessage response = await _httpClient.GetAsync(requestUrl) )
             {
@@ -130,7 +130,7 @@ namespace api.Logic
 
             return routes.ToArray();
         }
-        public async Task<Geometry> GeocodeLocation(string placeName)
+        public async Task<Location> GeocodeLocation(string placeName)
         {
             string apiKey = _configuration ["GooglePlacesApi:ApiKey"];
 
@@ -138,11 +138,19 @@ namespace api.Logic
             
             HttpResponseMessage response = await _httpClient.GetAsync(apiUrl);
 
-            if( response.IsSuccessStatusCode )
+            if(response.IsSuccessStatusCode)
             {
-                string content = await response.Content.ReadAsStringAsync();
-                var geocodingResponse = JsonConvert.DeserializeObject<Geometry>(content);
-                return geocodingResponse;
+                string content = await response.Content.ReadAsStringAsync();    
+                var geocodingResponse = JsonConvert.DeserializeObject<GeocodingResponse>(content);
+                if(geocodingResponse.Result.Length > 0)
+                {
+                    var location = geocodingResponse.Result[0].Geometry.Location;
+                    return location;
+                }
+                else
+                {
+                    throw new BadRequestException("Cannot get location");
+                }
             }
             else
             {

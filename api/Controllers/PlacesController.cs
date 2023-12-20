@@ -20,11 +20,11 @@ namespace api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetPlacesByCategory(string category, int radius, double latitude, double longitude)
+        public async Task<IActionResult> GetPlacesByCategory(string category, string placeName, int radius)
         {
             try
             {
-                var placesResponse = await _places.GetPlaces(category, radius, latitude, longitude);
+                var placesResponse = await _places.GetPlaces(category, placeName, radius);
 
                 if (placesResponse == null)
                 {
