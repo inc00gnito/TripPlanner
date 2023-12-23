@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Globalization;
 using System.Net;
 using System.Net.Http;
 
@@ -31,6 +32,7 @@ namespace api.Logic
             var placeLocation = GeocodeLocation(placeName);
 
             string requestUrl = $"{baseUrl}?location={placeLocation.Result.Lat},{placeLocation.Result.Lng}&radius={radius}&type={category}&key={apiKey}";
+
 
             using(HttpResponseMessage response = await _httpClient.GetAsync(requestUrl))
             {
@@ -86,7 +88,7 @@ namespace api.Logic
             }
             return places;
         }
-        public async Task<string []> GetRoute(List<Place> places)
+        public async Task<string[]> GetRoute(List<Place> places)
         {
             var instructionsList = new List<string>();
 
@@ -114,9 +116,9 @@ namespace api.Logic
                 throw new BadRequestException("Cannot get route");
             }
         }
-        private static string [] ParseDirections(string json)
+        private static string[] ParseDirections(string json)
         {
-            var routes = JToken.Parse(json)? ["routes"]?.SelectMany(route =>
+            var routes = JToken.Parse(json)?["routes"]?.SelectMany(route =>
                     route? ["legs"]?.SelectMany(leg =>
                         leg? ["steps"]?.Select(step =>
                         {
@@ -132,6 +134,7 @@ namespace api.Logic
         }
         public async Task<Location> GeocodeLocation(string placeName)
         {
+            System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("en-EN");
             string apiKey = _configuration ["GooglePlacesApi:ApiKey"];
 
             var apiUrl = $"https://maps.googleapis.com/maps/api/geocode/json?address={placeName}&key={apiKey}";
@@ -149,7 +152,7 @@ namespace api.Logic
                 }
                 else
                 {
-                    throw new BadRequestException("Cannot get location");
+                    throw new NotFoundException("Cannot get the location");
                 }
             }
             else
