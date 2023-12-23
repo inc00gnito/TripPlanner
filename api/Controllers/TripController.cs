@@ -20,7 +20,7 @@ namespace api.Controllers
         {
             var accountId = Convert.ToInt32(User.Claims.First(x => x.Type == "id").Value);
             var tripPlans = _trip.GetUserTripPlans(accountId);
-            return tripPlans == null ? Ok(tripPlans) : NotFound();
+            return tripPlans != null ? Ok(tripPlans) : NotFound("Trip plan not found");
            
         }
         [HttpPost("create")]
@@ -37,16 +37,16 @@ namespace api.Controllers
             var tripPlan = _trip.GetTripPlan(tripPlanId);
             if(tripPlan == null)
             {
-                return NotFound();         
+                return NotFound("Plan not found");         
             }
             _trip.DeleteTripPlan(tripPlanId);
-            return Ok(tripPlan);
+            return Ok();
         }
         [HttpGet("{tripPlanId}")]
         public IActionResult GetTripPlan(int tripPlanId)
         {
             var tripPlan = _trip.GetTripPlan(tripPlanId);
-            return tripPlan != null ? Ok(tripPlan) : NotFound(tripPlan);
+            return tripPlan != null ? Ok(tripPlan) : NotFound("Trip plan not found");
         }
         [HttpPost("addPlace")]
         public IActionResult AddPlaceToTripPlan(int tripPlanId, string placeId)
@@ -61,7 +61,7 @@ namespace api.Controllers
             var tripPlan = _trip.GetTripPlan(tripPlanId);
             if(tripPlan == null) 
             {
-                return NotFound();                
+                return NotFound("Trip plan not found");                
             }
             _trip.RemovePlaceFromTripPlan(tripPlaceId, tripPlanId);
             return Ok();

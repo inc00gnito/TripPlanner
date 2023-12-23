@@ -134,7 +134,7 @@ namespace api.Logic
         }
         public async Task<Location> GeocodeLocation(string placeName)
         {
-            System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("en-EN");
+            System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
             string apiKey = _configuration ["GooglePlacesApi:ApiKey"];
 
             var apiUrl = $"https://maps.googleapis.com/maps/api/geocode/json?address={placeName}&key={apiKey}";
