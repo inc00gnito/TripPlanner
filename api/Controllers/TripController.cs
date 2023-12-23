@@ -53,7 +53,7 @@ namespace api.Controllers
         {
             var accountId = Convert.ToInt32(User.Claims.First(x => x.Type == "id").Value);
             _trip.AddPlaceToTripPlan(tripPlanId, accountId, placeId);
-            return Ok();
+            return Ok(placeId);
         }
         [HttpDelete("place/{tripPlaceId}/plan/{tripPlanId}")]
         public IActionResult RemovePlaceFromTripPlan(string tripPlaceId, int tripPlanId) 
