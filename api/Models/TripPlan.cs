@@ -8,6 +8,8 @@ namespace api.Models
         public int Id { get; set; }
         public int AccountId { get; set; }
         public bool IsPublic { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
         public List<TripPlace> Places { get; set; }
     }
 }

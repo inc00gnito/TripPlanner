@@ -13,15 +13,22 @@ namespace api.Logic
         {
             _db = db;
         }
-        public TripPlan CreateTripPlan(int accountId)
+        public TripPlan CreateTripPlan(int accountId, string startDateJson, string endDateJson)
         {
+            DateTime startDate = DeserializeJsonDate(startDateJson);
+            DateTime endDate = DeserializeJsonDate(endDateJson);
+            if(startDate>endDate)
+            {
+                throw new Exception("Start day of trip cannot be greater than the end date");
+            }
             var tripPlan = new TripPlan
             {
                 AccountId = accountId,
                 IsPublic = false,
+                StartDate = startDate,
+                EndDate = endDate,
                 Places = new List<TripPlace>()
-            };
-            Console.WriteLine("dasdas");
+            };          
             _db.TripPlans.Add(tripPlan);
             _db.SaveChanges();
 
@@ -66,6 +73,19 @@ namespace api.Logic
             {
                 _db.TripPlaces.Remove(tripPlace);
                 _db.SaveChanges();
+            }
+        }
+        static DateTime DeserializeJsonDate(string jsonDate)
+        {            
+            jsonDate = jsonDate.Trim('"');
+            DateTime result;
+            if(DateTime.TryParse(jsonDate, out result))
+            {
+                return result;
+            }
+            else
+            {
+                throw new ArgumentException($"Cannot convert JSON to date: {jsonDate}");
             }
         }
     }
