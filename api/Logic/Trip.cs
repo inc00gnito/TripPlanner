@@ -13,12 +13,18 @@ namespace api.Logic
         {
             _db = db;
         }
-        public TripPlan CreateTripPlan(int accountId)
+        public TripPlan CreateTripPlan(int accountId, DateTime startDate, DateTime endDate)
         {
+            if(startDate<endDate)
+            {
+                throw new Exception("Start day of trip cannot be less than the end date");
+            }
             var tripPlan = new TripPlan
             {
                 AccountId = accountId,
                 IsPublic = false,
+                StartDate = startDate,
+                EndDate = endDate,
                 Places = new List<TripPlace>()
             };
             Console.WriteLine("dasdas");
