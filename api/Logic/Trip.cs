@@ -17,7 +17,7 @@ namespace api.Logic
         {
             DateTime startDate = DeserializeJsonDate(startDateJson);
             DateTime endDate = DeserializeJsonDate(endDateJson);
-            if(startDate<endDate)
+            if(startDate>endDate)
             {
                 throw new Exception("Start day of trip cannot be greater than the end date");
             }
@@ -28,8 +28,7 @@ namespace api.Logic
                 StartDate = startDate,
                 EndDate = endDate,
                 Places = new List<TripPlace>()
-            };
-            Console.WriteLine("dasdas");
+            };          
             _db.TripPlans.Add(tripPlan);
             _db.SaveChanges();
 
