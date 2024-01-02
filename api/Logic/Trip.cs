@@ -27,9 +27,9 @@ namespace api.Logic
 
             return tripPlan;
         }
-        public List<TripPlan> GetUserTripPlans(int accountId) 
+        public List<TripPlan> GetUserTripPlans(int accountId)
         {
-            var tripPlans = _db.TripPlans.Where(t=>t.AccountId==accountId).Include(t=>t.Places).ToList();
+            var tripPlans = _db.TripPlans.Where(t => t.AccountId == accountId).Include(t => t.Places).ToList();
             return tripPlans;
         }
         public TripPlan GetTripPlan(int tripPlanId)
@@ -42,7 +42,7 @@ namespace api.Logic
             var tripPlace = new TripPlace
             {
                 ApiPlaceId = placeId,
-                TripPlanId = tripPlanId,               
+                TripPlanId = tripPlanId,
             };
 
             _db.TripPlaces.Add(tripPlace);
@@ -51,18 +51,18 @@ namespace api.Logic
         public void DeleteTripPlan(int tripPlanId)
         {
             var tripPlan = _db.TripPlans.Include(t => t.Places).FirstOrDefault(t => t.Id == tripPlanId);
-            if( tripPlan != null )
+            if(tripPlan != null)
             {
                 _db.TripPlaces.RemoveRange(tripPlan.Places);
                 _db.TripPlans.Remove(tripPlan);
                 _db.SaveChanges();
-            }           
+            }
         }
         public void RemovePlaceFromTripPlan(string tripPlaceId, int tripPlanId)
         {
             var tripPlace = _db.TripPlaces.FirstOrDefault(tp => tp.ApiPlaceId == tripPlaceId && tp.TripPlanId == tripPlanId);
 
-            if( tripPlace != null )
+            if(tripPlace != null)
             {
                 _db.TripPlaces.Remove(tripPlace);
                 _db.SaveChanges();

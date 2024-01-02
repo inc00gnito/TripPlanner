@@ -20,7 +20,7 @@ namespace api.Controllers
         {
             var accountId = Convert.ToInt32(User.Claims.First(x => x.Type == "id").Value);
             var tripPlans = _trip.GetUserTripPlans(accountId);
-            return tripPlans == null ? Ok(tripPlans) : NotFound(tripPlans);
+            return tripPlans != null ? Ok(tripPlans) : NotFound("Trip plan not found");
            
         }
         [HttpPost("create")]
@@ -35,36 +35,36 @@ namespace api.Controllers
         public IActionResult DeleteTripPlan(int tripPlanId)
         {
             var tripPlan = _trip.GetTripPlan(tripPlanId);
-            if(tripPlan != null)
+            if(tripPlan == null)
             {
-                _trip.DeleteTripPlan(tripPlanId);
-                return Ok(tripPlan);
+                return NotFound("Plan not found");         
             }
-            return NotFound("Trip plan not found");
+            _trip.DeleteTripPlan(tripPlanId);
+            return Ok();
         }
         [HttpGet("{tripPlanId}")]
         public IActionResult GetTripPlan(int tripPlanId)
         {
             var tripPlan = _trip.GetTripPlan(tripPlanId);
-            return tripPlan != null ? Ok(tripPlan) : NotFound(tripPlan);
+            return tripPlan != null ? Ok(tripPlan) : NotFound("Trip plan not found");
         }
         [HttpPost("addPlace")]
         public IActionResult AddPlaceToTripPlan(int tripPlanId, string placeId)
         {
             var accountId = Convert.ToInt32(User.Claims.First(x => x.Type == "id").Value);
             _trip.AddPlaceToTripPlan(tripPlanId, accountId, placeId);
-            return Ok("A new place has been successfully added");
+            return Ok(placeId);
         }
         [HttpDelete("place/{tripPlaceId}/plan/{tripPlanId}")]
         public IActionResult RemovePlaceFromTripPlan(string tripPlaceId, int tripPlanId) 
         {
             var tripPlan = _trip.GetTripPlan(tripPlanId);
-            if(tripPlan != null) 
+            if(tripPlan == null) 
             {
-                _trip.RemovePlaceFromTripPlan(tripPlaceId, tripPlanId);
-                return Ok("Removed place from plan");
+                return NotFound("Trip plan not found");                
             }
-            return NotFound("Place not found");         
+            _trip.RemovePlaceFromTripPlan(tripPlaceId, tripPlanId);
+            return Ok();
         }
     }
 }
