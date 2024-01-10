@@ -78,6 +78,7 @@ namespace api.Logic
         static DateTime DeserializeJsonDate(string jsonDate)
         {            
             jsonDate = jsonDate.Trim('"');
+            //a
             DateTime result;
             if(DateTime.TryParse(jsonDate, out result))
             {
