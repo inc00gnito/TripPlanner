@@ -66,5 +66,43 @@ namespace api.Controllers
             }
             return NotFound("Place not found");         
         }
+
+        [HttpGet("share/{tripPlanId}/{isPublic}")]
+        public async Task<IActionResult> ShareOrUnsharePlanAsync(int tripPlanId, bool isPublic)
+        {
+            var accountId = Convert.ToInt32(User.Claims.First(x => x.Type == "id").Value);
+
+            TripPlan tripPlan = await _trip.ShareOrUnsharePlanAsync(tripPlanId, accountId, isPublic);
+            if (tripPlan == null)
+            {
+                return NotFound("Not Found");
+            }
+            else if (tripPlan.IsPublic)
+            {
+                return Ok("Plan was shared");
+            }
+            else
+            {
+                return Ok("Plan was unshared");
+            }
+        }
+
+        [HttpGet("show/{tripPlanId}")]
+        [AllowAnonymous]
+        public IActionResult ShowPlan(int tripPlanId)
+        {
+            var tripPlan = _trip.GetTripPlan(tripPlanId);
+
+            if (tripPlan == null)
+            {
+                return NotFound("Not Found");
+            }
+            else if (tripPlan.IsPublic == false)
+            {
+                return Ok("Plan is not shared");
+            }
+
+            return Ok(tripPlan);
+        }
     }
 }
