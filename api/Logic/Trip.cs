@@ -79,6 +79,7 @@ namespace api.Logic
         {            
             jsonDate = jsonDate.Trim('"');
             //a
+            //d
             DateTime result;
             if(DateTime.TryParse(jsonDate, out result))
             {
