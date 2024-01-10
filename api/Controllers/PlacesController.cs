@@ -20,20 +20,20 @@ namespace api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetPlacesByCategory(string category, int radius, double latitude, double longitude)
+        public async Task<IActionResult> GetPlacesByCategory(string category, string placeName, int radius)
         {
             try
             {
-                var placesResponse = await _places.GetPlaces(category, radius, latitude, longitude);
+                var placesResponse = await _places.GetPlaces(category, placeName, radius);
 
-                if (placesResponse == null)
+                if(placesResponse == null)
                 {
                     return NotFound();
                 }
                 var placesWithDetailsResponse = await _places.GetPlaceWithDetails(placesResponse);
                 return Ok(placesWithDetailsResponse);
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 return StatusCode(500, $"Internal Server Erorre: {ex.Message}");
             }
@@ -44,14 +44,14 @@ namespace api.Controllers
             try
             {
                 var routeResponse = await _places.GetRoute(places);
-                
-                if (routeResponse == null)
+
+                if(routeResponse == null)
                 {
                     return NotFound();
                 }
                 return Ok(routeResponse);
             }
-            catch (Exception ex) 
+            catch(Exception ex)
             {
                 return StatusCode(500, $"Internal Server Error: {ex.Message}");
             }
