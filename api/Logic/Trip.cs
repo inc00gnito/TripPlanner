@@ -88,5 +88,17 @@ namespace api.Logic
                 throw new ArgumentException($"Cannot convert JSON to date: {jsonDate}");
             }
         }
+
+        public async Task<TripPlan> ShareOrUnsharePlanAsync(int planId, int accountId, bool isPublic)
+        {
+            TripPlan tripPlan = await _db.TripPlans.Where(e => e.AccountId == accountId).FirstOrDefaultAsync(e => e.Id == planId);
+            if (tripPlan != null)
+            {
+                tripPlan.IsPublic = isPublic;
+                _db.TripPlans.Update(tripPlan);
+                _db.SaveChangesAsync();
+            }
+            return tripPlan;
+        }
     }
 }
