@@ -13,23 +13,30 @@ namespace api.Logic
         {
             _db = db;
         }
-        public TripPlan CreateTripPlan(int accountId)
+        public TripPlan CreateTripPlan(int accountId, string startDateJson, string endDateJson)
         {
+            DateTime startDate = DeserializeJsonDate(startDateJson);
+            DateTime endDate = DeserializeJsonDate(endDateJson);
+            if(startDate>endDate)
+            {
+                throw new Exception("Start day of trip cannot be greater than the end date");
+            }
             var tripPlan = new TripPlan
             {
                 AccountId = accountId,
                 IsPublic = false,
+                StartDate = startDate,
+                EndDate = endDate,
                 Places = new List<TripPlace>()
-            };
-            Console.WriteLine("dasdas");
+            };          
             _db.TripPlans.Add(tripPlan);
             _db.SaveChanges();
 
             return tripPlan;
         }
-        public List<TripPlan> GetUserTripPlans(int accountId) 
+        public List<TripPlan> GetUserTripPlans(int accountId)
         {
-            var tripPlans = _db.TripPlans.Where(t=>t.AccountId==accountId).Include(t=>t.Places).ToList();
+            var tripPlans = _db.TripPlans.Where(t => t.AccountId == accountId).Include(t => t.Places).ToList();
             return tripPlans;
         }
         public TripPlan GetTripPlan(int tripPlanId)
@@ -42,7 +49,7 @@ namespace api.Logic
             var tripPlace = new TripPlace
             {
                 ApiPlaceId = placeId,
-                TripPlanId = tripPlanId,               
+                TripPlanId = tripPlanId,
             };
 
             _db.TripPlaces.Add(tripPlace);
@@ -51,23 +58,24 @@ namespace api.Logic
         public void DeleteTripPlan(int tripPlanId)
         {
             var tripPlan = _db.TripPlans.Include(t => t.Places).FirstOrDefault(t => t.Id == tripPlanId);
-            if( tripPlan != null )
+            if(tripPlan != null)
             {
                 _db.TripPlaces.RemoveRange(tripPlan.Places);
                 _db.TripPlans.Remove(tripPlan);
                 _db.SaveChanges();
-            }           
+            }
         }
         public void RemovePlaceFromTripPlan(string tripPlaceId, int tripPlanId)
         {
             var tripPlace = _db.TripPlaces.FirstOrDefault(tp => tp.ApiPlaceId == tripPlaceId && tp.TripPlanId == tripPlanId);
 
-            if( tripPlace != null )
+            if(tripPlace != null)
             {
                 _db.TripPlaces.Remove(tripPlace);
                 _db.SaveChanges();
             }
         }
+
 
         public async Task<TripPlan> SharePlanAsync(int planId, int accountId)
         {
@@ -79,6 +87,20 @@ namespace api.Logic
                 _db.SaveChangesAsync();
             }
             return tripPlan;
+
+        static DateTime DeserializeJsonDate(string jsonDate)
+        {            
+            jsonDate = jsonDate.Trim('"');
+            DateTime result;
+            if(DateTime.TryParse(jsonDate, out result))
+            {
+                return result;
+            }
+            else
+            {
+                throw new ArgumentException($"Cannot convert JSON to date: {jsonDate}");
+            }
+
         }
     }
 }
