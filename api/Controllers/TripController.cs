@@ -104,5 +104,19 @@ namespace api.Controllers
 
             return Ok(tripPlan);
         }
+        [HttpGet("showPublicTripPlans")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ShowPublicTripPlans()
+        {
+            var tripPlans = await _trip.GetAllPublicTripPlans();
+            if(tripPlans == null)
+            {
+                return NotFound("Not found list of public plans");
+            }
+            else
+            {
+                return Ok(tripPlans);
+            }
+        }
     }
 }

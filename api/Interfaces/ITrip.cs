@@ -7,6 +7,7 @@ namespace api.Interfaces
         List<TripPlan> GetUserTripPlans(int accountId);
         TripPlan CreateTripPlan(int accountId, string startDate, string endDate);
         TripPlan GetTripPlan(int tripPlanId);
+        Task<List<TripPlan>> GetAllPublicTripPlans();
         void AddPlaceToTripPlan(int tripPlanId, int accountId, string placeId);
         void DeleteTripPlan(int tripPlanId);
         void RemovePlaceFromTripPlan(string tripPlaceId, int tripPlanId);
