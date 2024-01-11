@@ -106,9 +106,9 @@ namespace api.Controllers
         }
         [HttpGet("showPublicTripPlans")]
         [AllowAnonymous]
-        public IActionResult ShowPublicTripPlans()
+        public async Task<IActionResult> ShowPublicTripPlans()
         {
-            var tripPlans = _trip.GetAllPublicTripPlans();
+            var tripPlans = await _trip.GetAllPublicTripPlans();
             if(tripPlans == null)
             {
                 return NotFound("Not found list of public plans");

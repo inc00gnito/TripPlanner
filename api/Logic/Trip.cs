@@ -44,9 +44,9 @@ namespace api.Logic
             var tripPlan = _db.TripPlans.Include(tp => tp.Places).FirstOrDefault(tp => tp.Id == tripPlanId);
             return tripPlan;
         }
-        public List<TripPlan> GetAllPublicTripPlans()
+        public async Task<List<TripPlan>> GetAllPublicTripPlans()
         {
-            var tripPlans = _db.TripPlans.Include(tps => tps.Places).Where(t => t.IsPublic == true).ToList();
+            var tripPlans = await _db.TripPlans.Include(tps => tps.Places).Where(t => t.IsPublic == true).ToListAsync();
             return tripPlans;
         }
         public void AddPlaceToTripPlan(int tripPlanId, int accountId, string placeId)
