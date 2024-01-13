@@ -17,5 +17,8 @@ namespace api.Models
         public string? Website { get; set; }
 
         public List<string>? Types { get; set; }
-    }    
+
+        [JsonProperty("opening_hours")]
+        public PlaceOpeningHours Opening_Hours { get; set; }
+    }
 }

@@ -2,6 +2,8 @@
 using api.Interfaces;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
+using Npgsql.PostgresTypes;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace api.Logic
@@ -44,7 +46,7 @@ namespace api.Logic
             var tripPlan = _db.TripPlans.Include(tp => tp.Places).FirstOrDefault(tp => tp.Id == tripPlanId);
             return tripPlan;
         }
-        public void AddPlaceToTripPlan(int tripPlanId, int accountId, string placeId)
+        public void savePlaceToDataBase(string placeId, int tripPlanId)
         {
             var tripPlace = new TripPlace
             {
@@ -54,6 +56,71 @@ namespace api.Logic
 
             _db.TripPlaces.Add(tripPlace);
             _db.SaveChanges();
+
+        }
+        public void AddPlaceToTripPlan(int tripPlanId, int accountId, Place place, string chosenDay)
+        {
+            DateTime dateTime = DateTime.Parse(chosenDay);
+            DayOfWeek day = dateTime.DayOfWeek;
+            string[] tabbleOfWeekDays = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+
+            int dayAsNumber = Array.IndexOf(tabbleOfWeekDays, day.ToString());
+
+            int hour = dateTime.Hour;
+            int minute = dateTime.Minute;
+            int requestedHour = Convert.ToInt32(hour.ToString() + minute.ToString());
+            if (minute < 10)
+            {
+                requestedHour *= 10;
+            }
+
+            if (place.Opening_Hours.periods[0].Close.Equals(null)){
+                savePlaceToDataBase(place.PlaceId, tripPlanId);
+                return;
+            }
+
+            for (int i = 0; i <= 6; i++)
+            {
+                
+                if (dayAsNumber == place.Opening_Hours.periods[i].Open.Day)
+                {
+                    PlaceOpeningHoursPeriodDetails dayClose = place.Opening_Hours.periods[i].Close;
+                    PlaceOpeningHoursPeriodDetails dayOpen = place.Opening_Hours.periods[i].Open;
+                    int openTime = Convert.ToInt32(dayOpen.Time);
+                    int closeTime = Convert.ToInt32(dayClose.Time);
+                    if (dayClose.Day == dayOpen.Day)
+                    {
+                        
+                        if(openTime<requestedHour && requestedHour < closeTime)
+                        {
+                            savePlaceToDataBase(place.PlaceId, tripPlanId);
+                            return;
+                        }
+                    }else
+                    {
+                        if (requestedHour > openTime)
+                        {
+                            savePlaceToDataBase(place.PlaceId, tripPlanId);
+                            return;
+                        }
+                    }
+                }else if(dayAsNumber == place.Opening_Hours.periods[i].Close.Day)
+                {
+                    PlaceOpeningHoursPeriodDetails dayClose = place.Opening_Hours.periods[i].Close;
+                    int closeTime = Convert.ToInt32(dayClose.Time);
+
+                    if (closeTime > requestedHour)
+                    {
+                        savePlaceToDataBase(place.PlaceId, tripPlanId);
+                        return;
+                    }
+                }
+            }
+            throw new Exception("At the selected hour the local is closed.");
+
+            
+
+            
         }
         public void DeleteTripPlan(int tripPlanId)
         {
