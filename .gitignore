@@ -1,0 +1,7 @@
+﻿################################################################################
+# Ten plik .gitignore został utworzony automatycznie przez Microsoft(R) Visual Studio.
+################################################################################
+
+/api/appsettings.json
+/api/api.csproj
+/api/Program.cs
