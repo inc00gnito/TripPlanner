@@ -45,6 +45,12 @@ namespace api.Logic
             var tripPlan = _db.TripPlans.Include(tp => tp.Places).FirstOrDefault(tp => tp.Id == tripPlanId);
             return tripPlan;
         }
+        public async Task<List<TripPlan>> GetAllPublicTripPlans()
+        {
+            var tripPlans = await _db.TripPlans.Include(tps => tps.Places).Where(t => t.IsPublic == true).ToListAsync();
+            return tripPlans;
+        }
+        
         public void savePlaceToDataBase(string placeId, int tripPlanId, string chosenDay)
         {
             var tripPlace = new TripPlace
@@ -152,6 +158,18 @@ namespace api.Logic
             {
                 throw new ArgumentException($"Cannot convert JSON to date: {jsonDate}");
             }
+        }
+
+        public async Task<TripPlan> ShareOrUnsharePlanAsync(int planId, int accountId, bool isPublic)
+        {
+            TripPlan tripPlan = await _db.TripPlans.Where(e => e.AccountId == accountId).FirstOrDefaultAsync(e => e.Id == planId);
+            if (tripPlan != null)
+            {
+                tripPlan.IsPublic = isPublic;
+                _db.TripPlans.Update(tripPlan);
+                _db.SaveChangesAsync();
+            }
+            return tripPlan;
         }
     }
 }
