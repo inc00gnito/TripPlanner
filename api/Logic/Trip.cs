@@ -2,7 +2,6 @@
 using api.Interfaces;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
-using Npgsql.PostgresTypes;
 using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 
@@ -53,10 +52,8 @@ namespace api.Logic
                 ApiPlaceId = placeId,
                 TripPlanId = tripPlanId,
             };
-
             _db.TripPlaces.Add(tripPlace);
             _db.SaveChanges();
-
         }
         public void AddPlaceToTripPlan(int tripPlanId, int accountId, Place place, string chosenDay)
         {
@@ -80,8 +77,7 @@ namespace api.Logic
             }
 
             for (int i = 0; i <= 6; i++)
-            {
-                
+            {               
                 if (dayAsNumber == place.Opening_Hours.periods[i].Open.Day)
                 {
                     PlaceOpeningHoursPeriodDetails dayClose = place.Opening_Hours.periods[i].Close;
@@ -116,11 +112,7 @@ namespace api.Logic
                     }
                 }
             }
-            throw new Exception("At the selected hour the local is closed.");
-
-            
-
-            
+            throw new Exception("At the selected hour the local is closed.");       
         }
         public void DeleteTripPlan(int tripPlanId)
         {
