@@ -10,6 +10,7 @@ namespace api.Models
         public string ApiPlaceId { get; set; }
         [ForeignKey("TripPlan")]
         public int TripPlanId { get; set; }
+        public DateTime ChosenDay { get; set; }
         [ForeignKey("Account")]
         public TripPlan TripPlan;
     }

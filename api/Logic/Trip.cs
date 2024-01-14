@@ -45,12 +45,13 @@ namespace api.Logic
             var tripPlan = _db.TripPlans.Include(tp => tp.Places).FirstOrDefault(tp => tp.Id == tripPlanId);
             return tripPlan;
         }
-        public void savePlaceToDataBase(string placeId, int tripPlanId)
+        public void savePlaceToDataBase(string placeId, int tripPlanId, string chosenDay)
         {
             var tripPlace = new TripPlace
             {
                 ApiPlaceId = placeId,
                 TripPlanId = tripPlanId,
+                ChosenDay = DateTime.Parse(chosenDay)
             };
             _db.TripPlaces.Add(tripPlace);
             _db.SaveChanges();
@@ -65,14 +66,19 @@ namespace api.Logic
 
             int hour = dateTime.Hour;
             int minute = dateTime.Minute;
-            int requestedHour = Convert.ToInt32(hour.ToString() + minute.ToString());
-            if (minute < 10)
+            int requestedHour;
+            if(minute < 10)
             {
-                requestedHour *= 10;
+                requestedHour = Convert.ToInt32(hour.ToString() + "0" + minute.ToString());
             }
+            else
+            {
+                requestedHour = Convert.ToInt32(hour.ToString() + minute.ToString());
+            }
+            
 
             if (place.Opening_Hours.periods[0].Close.Equals(null)){
-                savePlaceToDataBase(place.PlaceId, tripPlanId);
+                savePlaceToDataBase(place.PlaceId, tripPlanId, chosenDay);
                 return;
             }
 
@@ -89,14 +95,14 @@ namespace api.Logic
                         
                         if(openTime<requestedHour && requestedHour < closeTime)
                         {
-                            savePlaceToDataBase(place.PlaceId, tripPlanId);
+                            savePlaceToDataBase(place.PlaceId, tripPlanId, chosenDay);
                             return;
                         }
                     }else
                     {
                         if (requestedHour > openTime)
                         {
-                            savePlaceToDataBase(place.PlaceId, tripPlanId);
+                            savePlaceToDataBase(place.PlaceId, tripPlanId, chosenDay);
                             return;
                         }
                     }
@@ -107,7 +113,7 @@ namespace api.Logic
 
                     if (closeTime > requestedHour)
                     {
-                        savePlaceToDataBase(place.PlaceId, tripPlanId);
+                        savePlaceToDataBase(place.PlaceId, tripPlanId, chosenDay);
                         return;
                     }
                 }

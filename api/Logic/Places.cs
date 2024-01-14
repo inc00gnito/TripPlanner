@@ -49,6 +49,39 @@ namespace api.Logic
                 }
             }
         }
+        public async Task<Place> GetPlaceByPlaceID(string placeId)
+        {
+            string apiKey = _configuration ["GooglePlacesApi:ApiKey"];
+            string detailsUrl = "https://maps.googleapis.com/maps/api/place/details/json";
+            string requestDetailsUrl = $"{detailsUrl}?place_id={placeId}&key={apiKey}";
+
+            using(HttpResponseMessage detailsResponse = await _httpClient.GetAsync(requestDetailsUrl))
+            {
+                if(detailsResponse.IsSuccessStatusCode)
+                {
+                    string detailsContent = await detailsResponse.Content.ReadAsStringAsync();
+
+                    var placeWithDetailsResponse = JsonConvert.DeserializeObject<GooglePlaceResponse>(detailsContent);
+
+                    Place place = new Place()
+                    {
+                        PlaceId = placeWithDetailsResponse.Result.PlaceId,
+                        Name = placeWithDetailsResponse.Result.Name,
+                        Rating = placeWithDetailsResponse.Result.Rating,
+                        Vicinity = placeWithDetailsResponse.Result.Vicinity,
+                        Types = placeWithDetailsResponse.Result.Types.ToList(),
+                        Website = placeWithDetailsResponse.Result.Website,
+                        FormattedPhoneNumber = placeWithDetailsResponse.Result.FormattedPhoneNumber,
+                        Opening_Hours = placeWithDetailsResponse.Result.Opening_Hours,
+                    };
+                    return place;
+                }
+                else
+                {
+                    throw new BadRequestException("Cannot get place with details");
+                }
+            }         
+        }
         public async Task<List<Place>> GetPlaceWithDetails(GooglePlacesResponse placesResponse)
         {
             string apiKey = _configuration ["GooglePlacesApi:ApiKey"];
@@ -66,7 +99,7 @@ namespace api.Logic
                         string detailsContent = await detailsResponse.Content.ReadAsStringAsync();
 
                         var placeWithDetailsResponse = JsonConvert.DeserializeObject<GooglePlaceResponse>(detailsContent);
-                        
+
                         Place place = new Place()
                         {
                             PlaceId = placeWithDetailsResponse.Result.PlaceId,
@@ -88,7 +121,7 @@ namespace api.Logic
             }
             return places;
         }
-        public async Task<string[]> GetRoute(List<Place> places)
+        public async Task<string []> GetRoute(List<Place> places)
         {
             var instructionsList = new List<string>();
 
@@ -116,9 +149,9 @@ namespace api.Logic
                 throw new BadRequestException("Cannot get route");
             }
         }
-        private static string[] ParseDirections(string json)
+        private static string [] ParseDirections(string json)
         {
-            var routes = JToken.Parse(json)?["routes"]?.SelectMany(route =>
+            var routes = JToken.Parse(json)? ["routes"]?.SelectMany(route =>
                     route? ["legs"]?.SelectMany(leg =>
                         leg? ["steps"]?.Select(step =>
                         {
