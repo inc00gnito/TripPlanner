@@ -8,5 +8,6 @@ namespace api.Interfaces
         public Task<List<Place>> GetPlaceWithDetails(GooglePlacesResponse placesResponse);
         public Task<string []> GetRoute(List<Place> places);
         public Task<Location> GeocodeLocation(string placeName);
+        public Task<Place> GetPlaceByPlaceID(string placeId);
     }
 }

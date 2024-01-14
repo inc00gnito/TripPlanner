@@ -10,10 +10,12 @@ namespace api.Controllers
     public class TripController : Controller
     {
         private readonly ITrip _trip;
+        private readonly IPlaces _place;
        
-        public TripController(ITrip trip)
+        public TripController(ITrip trip, IPlaces place)
         {
             _trip = trip;
+            _place = place;
         }
         [HttpGet("all")]
         public IActionResult GetAllUserPlans()
@@ -49,11 +51,12 @@ namespace api.Controllers
             return tripPlan != null ? Ok(tripPlan) : NotFound("Trip plan not found");
         }
         [HttpPost("addPlace")]
-        public IActionResult AddPlaceToTripPlan(int tripPlanId, string placeId)
+        public IActionResult AddPlaceToTripPlan(int tripPlanId, string placeId,string chosenDate)
         {
             var accountId = Convert.ToInt32(User.Claims.First(x => x.Type == "id").Value);
-            _trip.AddPlaceToTripPlan(tripPlanId, accountId, placeId);
-            return Ok(placeId);
+            var place = _place.GetPlaceByPlaceID(placeId);
+            _trip.AddPlaceToTripPlan(tripPlanId, accountId, place.Result ,chosenDate );
+            return Ok(place.Result);
         }
         [HttpDelete("place/{tripPlaceId}/plan/{tripPlanId}")]
         public IActionResult RemovePlaceFromTripPlan(string tripPlaceId, int tripPlanId) 
