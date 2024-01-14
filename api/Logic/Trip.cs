@@ -77,7 +77,7 @@ namespace api.Logic
             }
             
 
-            if (place.Opening_Hours.periods[0].Close.Equals(null)){
+            if (Equals(place.Opening_Hours.periods[0].Close,null)){
                 savePlaceToDataBase(place.PlaceId, tripPlanId, chosenDay);
                 return;
             }
