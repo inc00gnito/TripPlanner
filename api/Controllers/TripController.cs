@@ -49,11 +49,11 @@ namespace api.Controllers
             return tripPlan != null ? Ok(tripPlan) : NotFound("Trip plan not found");
         }
         [HttpPost("addPlace")]
-        public IActionResult AddPlaceToTripPlan(int tripPlanId, string placeId)
+        public IActionResult AddPlaceToTripPlan(int tripPlanId, [FromBody] Place place,string chosenDate)
         {
             var accountId = Convert.ToInt32(User.Claims.First(x => x.Type == "id").Value);
-            _trip.AddPlaceToTripPlan(tripPlanId, accountId, placeId);
-            return Ok(placeId);
+            _trip.AddPlaceToTripPlan(tripPlanId, accountId,place ,chosenDate );
+            return Ok(place.PlaceId);
         }
         [HttpDelete("place/{tripPlaceId}/plan/{tripPlanId}")]
         public IActionResult RemovePlaceFromTripPlan(string tripPlaceId, int tripPlanId) 
