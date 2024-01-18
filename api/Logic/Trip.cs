@@ -82,6 +82,11 @@ namespace api.Logic
                 requestedHour = Convert.ToInt32(hour.ToString() + minute.ToString());
             }
             
+            if(place.Opening_Hours==null)
+            {
+                savePlaceToDataBase(place.PlaceId, tripPlanId, chosenDay);
+                return;
+            }
 
             if (Equals(place.Opening_Hours.periods[0].Close,null)){
                 savePlaceToDataBase(place.PlaceId, tripPlanId, chosenDay);
