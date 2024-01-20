@@ -70,7 +70,7 @@ namespace api.Controllers
             return Ok();
         }
 
-        [HttpGet("share/{tripPlanId}/{isPublic}")]
+        [HttpPut("share/{tripPlanId}/{isPublic}")]
         public async Task<IActionResult> ShareOrUnsharePlanAsync(int tripPlanId, bool isPublic)
         {
             var accountId = Convert.ToInt32(User.Claims.First(x => x.Type == "id").Value);
