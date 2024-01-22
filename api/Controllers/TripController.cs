@@ -26,10 +26,10 @@ namespace api.Controllers
            
         }
         [HttpPost("create")]
-        public IActionResult CreateTripPlan(string startDate, string endDate)
+        public IActionResult CreateTripPlan(string startDate, string endDate, string destination)
         {
             var accountId = Convert.ToInt32(User.Claims.First(x => x.Type == "id").Value);
-            var tripPlan = _trip.CreateTripPlan(accountId, startDate, endDate);
+            var tripPlan = _trip.CreateTripPlan(accountId, destination, startDate, endDate);
             return Ok(tripPlan);
         }
 
