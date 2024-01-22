@@ -7,6 +7,7 @@ namespace api.Models
         [Key]
         public int Id { get; set; }
         public int AccountId { get; set; }
+        public string Destination { get; set; }
         public bool IsPublic { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
